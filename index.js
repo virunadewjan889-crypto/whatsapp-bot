@@ -61,47 +61,35 @@ client.on('message', async msg => {
             msg.reply("User kicked 😎");
         }
     }
-    
-    // Weather Update
-else if (text.startsWith('.weather ')) {
-    const city = text.replace('.weather ', '').trim();
-    const apiKey = 'ec3e0d5042f5649c04c8625e7b5773e4'; // ec3e0d5042f5649c04c8625e7b5773e4
-    
-    try {
-        const res = await axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`);
-        const weather = res.data;
-        const msgText = `🌍 *Weather in ${weather.name}*\n` +
-                        `🌡️ Temp: ${weather.main.temp}°C\n` +
-                        `☁️ Condition: ${weather.weather[0].description}\n` +
-                        `💧 Humidity: ${weather.main.humidity}%`;
-        msg.reply(msgText);
-    } catch (error) {
-        msg.reply("කාලගුණ තොරතුරු ලබාගත නොහැකි විය. නගරයේ නම නිවැරදිදැයි පරීක්ෂා කරන්න. 😢");
-    }
-}
 
-// Currency Converter
-else if (text.startsWith('.convert ')) {
-    const args = text.split(' ');
-    if (args.length !== 4) return msg.reply("වැරදි ආකෘතියකි! උදාහරණ: .convert 10 USD LKR");
-    
-    const amount = args[1];
-    const from = args[2].toUpperCase();
-    const to = args[3].toUpperCase();
-    
-    // dc5c38242220ef919254765d
-    const apiKey = 'dc5c38242220ef919254765d'; 
-    
-    try {
-        const res = await axios.get(`https://v6.exchangerate-api.com/v6/${apiKey}/pair/${from}/${to}/${amount}`);
-        const result = res.data.conversion_result;
-        msg.reply(`💱 *${amount} ${from}* = *${result.toFixed(2)} ${to}*`);
-    } catch (error) {
-        msg.reply("මුදල් පරිවර්තනය අසාර්ථකයි. කරුණාකර නැවත උත්සාහ කරන්න.");
+    // 5. Weather Update
+    else if (text.startsWith('.weather ')) {
+        const city = text.replace('.weather ', '').trim();
+        const apiKey = 'ec3e0d5042f5649c04c8625e7b5773e4';
+        try {
+            const res = await axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`);
+            const weather = res.data;
+            msg.reply(`🌍 *Weather in ${weather.name}*\n🌡️ Temp: ${weather.main.temp}°C\n☁️ Condition: ${weather.weather[0].description}`);
+        } catch (error) {
+            msg.reply("කාලගුණ තොරතුරු ලබාගත නොහැකි විය. 😢");
+        }
     }
-}
 
-    // 5. Utilities
+    // 6. Currency Converter
+    else if (text.startsWith('.convert ')) {
+        const args = text.split(' ');
+        if (args.length !== 4) return msg.reply("වැරදි ආකෘතියකි! උදා: .convert 10 USD LKR");
+        const amount = args[1], from = args[2].toUpperCase(), to = args[3].toUpperCase();
+        const apiKey = 'dc5c38242220ef919254765d'; 
+        try {
+            const res = await axios.get(`https://v6.exchangerate-api.com/v6/${apiKey}/pair/${from}/${to}/${amount}`);
+            msg.reply(`💱 *${amount} ${from}* = *${res.data.conversion_result.toFixed(2)} ${to}*`);
+        } catch (error) {
+            msg.reply("මුදල් පරිවර්තනය අසාර්ථකයි.");
+        }
+    }
+
+    // 7. Utilities
     else if (text === '.time') msg.reply('🕒 ' + new Date().toLocaleTimeString());
     else if (text === '.dice') msg.reply('🎲 ' + (Math.floor(Math.random() * 6) + 1));
 });
